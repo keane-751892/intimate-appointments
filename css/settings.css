@@ -1,0 +1,126 @@
+/* 设置模态框样式 */
+.settings-section {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.settings-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.settings-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.settings-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.settings-info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md);
+  background: linear-gradient(135deg, rgba(255, 250, 253, 0.8) 0%, rgba(255, 240, 245, 0.8) 100%);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 107, 157, 0.1);
+}
+
+.settings-info-item label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.settings-info-value {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: var(--font-size-md);
+}
+
+.settings-empty {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--text-secondary);
+}
+
+.settings-empty p {
+  margin-bottom: var(--space-md);
+  font-size: var(--font-size-md);
+}
+
+.settings-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-md);
+}
+
+.settings-actions .btn-secondary {
+  padding: var(--space-md);
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+
+/* 设置按钮样式 */
+.btn-settings {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(255, 182, 193, 0.1) 100%);
+  color: var(--primary-color);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--primary-color);
+  transition: all var(--transition-base);
+  margin-right: var(--space-sm);
+}
+
+.btn-settings:hover {
+  background: linear-gradient(135deg, #FF6B9D 0%, #FF69B4 100%);
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+}
+
+/* 绑定伴侣按钮特殊样式 */
+.btn-bind-partner {
+  background: linear-gradient(135deg, #FFB6C1 0%, #FF69B4 100%);
+  border: none;
+}
+
+.btn-bind-partner::before {
+  content: '💑';
+  margin-right: var(--space-xs);
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .settings-info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+
+  .settings-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-settings {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}

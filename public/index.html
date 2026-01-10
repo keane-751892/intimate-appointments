@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💕 亲密时光 - 夫妻预约应用</title>
+  <meta name="description" content="为夫妻打造的私密预约管理应用">
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/auth.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/appointments.css">
+  <link rel="stylesheet" href="/css/enhanced.css">
+  <link rel="stylesheet" href="/css/settings.css">
+</head>
+<body>
+  <!-- 认证页面 -->
+  <div id="auth-page" class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 class="auth-title">亲密时光</h1>
+        <p class="auth-subtitle">为夫妻打造的私密预约管理</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">登录</button>
+        <button class="auth-tab" data-tab="register">注册</button>
+        <button class="auth-tab" data-tab="forgot">找回密码</button>
+      </div>
+
+      <!-- 登录表单 -->
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email">邮箱</label>
+          <input
+            type="email"
+            id="login-email"
+            class="form-input"
+            placeholder="请输入您的邮箱"
+            required
+          >
+          <div class="form-error" id="login-email-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">密码</label>
+          <input
+            type="password"
+            id="login-password"
+            class="form-input"
+            placeholder="请输入密码"
+            required
+          >
+          <div class="form-error" id="login-password-error"></div>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          <span class="btn-text">登录</span>
+          <span class="loading" style="display: none;"></span>
+        </button>
+
+        <div class="auth-footer">
+          <span class="auth-link" id="show-forgot">忘记密码？</span>
+        </div>
+      </form>
+
+      <!-- 注册表单 -->
+      <form id="register-form" class="auth-form" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="register-username">用户名</label>
+          <input
+            type="text"
+            id="register-username"
+            class="form-input"
+            placeholder="请输入用户名"
+            required
+          >
+          <div class="form-error" id="register-username-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="register-email">邮箱</label>
+          <input
+            type="email"
+            id="register-email"
+            class="form-input"
+            placeholder="请输入您的邮箱"
+            required
+          >
+          <div class="form-error" id="register-email-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="register-password">密码</label>
+          <input
+            type="password"
+            id="register-password"
+            class="form-input"
+            placeholder="请输入密码（至少6位）"
+            required
+          minlength="6"
+          >
+          <div class="form-error" id="register-password-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="register-confirm-password">确认密码</label>
+          <input
+            type="password"
+            id="register-confirm-password"
+            class="form-input"
+            placeholder="请再次输入密码"
+            required
+          >
+          <div class="form-error" id="register-confirm-password-error"></div>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          <span class="btn-text">注册</span>
+          <span class="loading" style="display: none;"></span>
+        </button>
+      </form>
+
+      <!-- 找回密码表单 -->
+      <form id="forgot-form" class="auth-form" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="forgot-email">邮箱</label>
+          <input
+            type="email"
+            id="forgot-email"
+            class="form-input"
+            placeholder="请输入您的注册邮箱"
+            required
+          >
+          <div class="form-error" id="forgot-email-error"></div>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          <span class="btn-text">发送重置链接</span>
+          <span class="loading" style="display: none;"></span>
+        </button>
+
+        <div class="auth-footer">
+          <span class="auth-link" id="back-to-login">返回登录</span>
+        </div>
+      </form>
+
+      <div id="auth-message" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- 主界面 -->
+  <div id="dashboard-page" class="dashboard-container" style="display: none;">
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+      <div class="navbar-content">
+        <div class="navbar-brand">亲密时光</div>
+        <div class="navbar-user">
+          <div class="user-info">
+            <div class="user-name" id="user-name"></div>
+            <div class="user-partner" id="partner-info"></div>
+          </div>
+          <button class="btn-settings" id="settings-btn" title="设置">⚙️ 设置</button>
+          <button class="btn-logout" id="logout-btn">退出登录</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <!-- 欢迎卡片 -->
+      <div class="welcome-card">
+        <h2 class="welcome-title">欢迎回来，<span id="welcome-name"></span>！</h2>
+        <p class="welcome-subtitle">准备好为美好的亲密时光做计划了吗？</p>
+        <div class="action-buttons">
+          <button class="btn-action" id="create-appointment-btn">
+            创建预约
+          </button>
+          <button class="btn-action btn-bind-partner" id="bind-partner-btn">
+            绑定伴侣
+          </button>
+          <button class="btn-action btn-view-history" id="view-history-btn">
+            查看历史
+          </button>
+        </div>
+      </div>
+
+      <!-- 预约列表 -->
+      <div class="appointments-section">
+        <div class="section-header">
+          <h3 class="section-title">预约列表</h3>
+          <div id="filter-buttons" style="display: flex; gap: 8px;">
+            <button class="auth-tab active" data-filter="all">全部</button>
+            <button class="auth-tab" data-filter="pending">待确认</button>
+            <button class="auth-tab" data-filter="confirmed">已确认</button>
+          </div>
+        </div>
+
+        <div id="appointments-list" class="appointments-list">
+          <!-- 预约卡片将通过JS动态添加 -->
+        </div>
+
+        <div id="empty-state" class="empty-state" style="display: none;">
+          <div class="empty-icon">📅</div>
+          <h3 class="empty-title">暂无预约</h3>
+          <p class="empty-description">创建您的第一个预约，开始规划美好的亲密时光吧！</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- 通知容器 -->
+    <div class="notifications-container" id="notifications-container"></div>
+  </div>
+
+  <!-- 创建预约模态框 -->
+  <div id="create-appointment-modal" class="modal" style="display: none;">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">创建新预约</h3>
+        <button class="modal-close" id="close-modal">&times;</button>
+      </div>
+
+      <form id="appointment-form">
+        <div class="form-group">
+          <label class="form-label">预约标题</label>
+          <input
+            type="text"
+            id="appointment-title"
+            class="form-input"
+            placeholder="给这次约会起个甜蜜的名字吧"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">日期和时间</label>
+          <input
+            type="datetime-local"
+            id="appointment-date"
+            class="form-input"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">备注信息</label>
+          <textarea
+            id="appointment-notes"
+            class="form-input"
+            rows="4"
+            placeholder="有什么特别安排或期待吗？"
+          ></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="cancel-appointment">取消</button>
+          <button type="submit" class="btn-primary">发送预约</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 修改预约模态框 -->
+  <div id="modify-appointment-modal" class="modal" style="display: none;">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">修改预约</h3>
+        <button class="modal-close" id="close-modify-modal">&times;</button>
+      </div>
+
+      <form id="modify-appointment-form">
+        <input type="hidden" id="modify-appointment-id">
+
+        <div class="form-group">
+          <label class="form-label">预约标题</label>
+          <input
+            type="text"
+            id="modify-appointment-title"
+            class="form-input"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">日期和时间</label>
+          <input
+            type="datetime-local"
+            id="modify-appointment-date"
+            class="form-input"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">备注信息</label>
+          <textarea
+            id="modify-appointment-notes"
+            class="form-input"
+            rows="4"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">修改说明</label>
+          <textarea
+            id="modify-appointment-reason"
+            class="form-input"
+            rows="2"
+            placeholder="告诉TA为什么想修改这个预约..."
+          ></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="cancel-modify">取消</button>
+          <button type="submit" class="btn-primary">提交修改</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 绑定伴侣模态框 -->
+  <div id="bind-partner-modal" class="modal" style="display: none;">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">绑定伴侣</h3>
+        <button class="modal-close" id="close-bind-modal">&times;</button>
+      </div>
+
+      <form id="bind-partner-form">
+        <div class="form-group">
+          <label class="form-label">伴侣的注册邮箱</label>
+          <input
+            type="email"
+            id="partner-email"
+            class="form-input"
+            placeholder="请输入您伴侣的注册邮箱"
+            required
+          >
+          <small style="color: var(--text-secondary); font-size: var(--font-size-xs);">
+            输入后，您的伴侣也需要确认绑定才能完成配对
+          </small>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="cancel-bind">稍后绑定</button>
+          <button type="submit" class="btn-primary">发送绑定请求</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 设置模态框 -->
+  <div id="settings-modal" class="modal" style="display: none;">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ 设置</h3>
+        <button class="modal-close" id="close-settings-modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 个人资料 -->
+        <div class="settings-section">
+          <h4 class="settings-section-title">👤 个人资料</h4>
+          <div class="settings-info-group">
+            <div class="settings-info-item">
+              <label>用户名</label>
+              <div class="settings-info-value" id="settings-username"></div>
+            </div>
+            <div class="settings-info-item">
+              <label>邮箱</label>
+              <div class="settings-info-value" id="settings-email"></div>
+            </div>
+            <div class="settings-info-item">
+              <label>注册时间</label>
+              <div class="settings-info-value" id="settings-created"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 伴侣信息 -->
+        <div class="settings-section">
+          <h4 class="settings-section-title">💑 伴侣信息</h4>
+          <div id="settings-partner-info" class="settings-info-group">
+            <div class="settings-empty">
+              <p>尚未绑定伴侣</p>
+              <button class="btn-secondary btn-bind-partner-now" style="margin-top: 12px;">
+                立即绑定
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 数据管理 -->
+        <div class="settings-section">
+          <h4 class="settings-section-title">💾 数据管理</h4>
+          <div class="settings-actions">
+            <button class="btn-secondary" id="btn-backup" data-icon="📥">
+              创建备份
+            </button>
+            <button class="btn-secondary" id="btn-export" data-icon="📤">
+              导出数据
+            </button>
+            <button class="btn-secondary" id="btn-import" data-icon="📥">
+              导入数据
+            </button>
+            <input type="file" id="import-file" accept=".json" style="display: none;">
+          </div>
+        </div>
+
+        <!-- 应用信息 -->
+        <div class="settings-section">
+          <h4 class="settings-section-title">ℹ️ 应用信息</h4>
+          <div class="settings-info-group">
+            <div class="settings-info-item">
+              <label>应用版本</label>
+              <div class="settings-info-value">v1.0.0</div>
+            </div>
+            <div class="settings-info-item">
+              <label>最后同步</label>
+              <div class="settings-info-value" id="settings-last-sync">从未同步</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-primary" id="close-settings-btn">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/utils/storage.js"></script>
+  <script src="/js/utils/crypto.js"></script>
+  <script src="/js/utils/notification.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/appointment.js"></script>
+  <script src="/js/settings.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
